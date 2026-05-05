@@ -27,6 +27,21 @@ export const axiosUsers = createAsyncThunk(
   },
 );
 
+export const postusers = createAsyncThunk(
+  "users/postUsers",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(
+        "https://jsonplaceholder.typicode.com/users",
+        data,
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.message || "error");
+    }
+  }
+);
+
 const usersSlice = createSlice({
   name: "users",
   initialState: {
@@ -51,6 +66,11 @@ const usersSlice = createSlice({
       state.Loading = false;
       state.error = action.payload;
     });
+
+    //post users
+    builder.addCase(postusers.fulfilled, (state , action) => {
+      state.data.unshift(action.payload);
+    })
   },
 });
 
